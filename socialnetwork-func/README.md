@@ -1,6 +1,9 @@
 
 socialnetwork-func项目简介：该项目为社交网络应用的serverless版本。
 ---
+#### 依赖环境
+- Kubernetes
+
 
 #### **部署步骤：**
 ##### 1. 创建命名空间
