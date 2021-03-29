@@ -1,0 +1,7 @@
+kind: Namespace  
+apiVersion: v1 
+metadata:
+  name: sdc-dnninference
+  labels:
+    name: sdc-dnninference
+

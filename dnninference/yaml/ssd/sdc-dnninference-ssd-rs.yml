@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sdc-dnninference-ssd-service
+  namespace: sdc-dnninference
+spec:
+  selector:
+    app: sdc-dnninference-ssd-app-label
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8501
+    targetPort: 8501
+    nodePort: 30105
+---
+apiVersion: apps/v1                          
+kind: ReplicaSet                               
+metadata:
+  name: sdc-dnninference-ssd-replicaset
+  namespace: sdc-dnninference
+  labels:                               
+    app: sdc-dnninference-ssd-app-label
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sdc-dnninference-ssd-app-label
+  template:
+    metadata:
+      name: sdc-dnninference-ssd-ReplicaSet
+      labels:
+        app: sdc-dnninference-ssd-app-label
+    spec:
+      nodeName: tank-node2                 # node name
+      containers:
+      - name: sdc-dnninference-ssd-con      
+        image: sdcbench/dnninference-tfserving:2.3.0   
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        env:
+        - name: MODEL_NAME
+          value: "ssd"
+        volumeMounts:
+        - name: model-path
+          mountPath: /models/ssd
+      volumes:
+      - name: model-path
+        hostPath:
+          path: /mnt/sdcbench/dnninference/models/ssd

@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sdc-dnninference-yamnet-service
+  namespace: sdc-dnninference
+spec:
+  selector:
+    app: sdc-dnninference-yamnet-app-label
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8501
+    targetPort: 8501
+    nodePort: 30107
+---
+apiVersion: apps/v1                          
+kind: ReplicaSet                               
+metadata:
+  name: sdc-dnninference-yamnet-replicaset
+  namespace: sdc-dnninference
+  labels:                               
+    app: sdc-dnninference-yamnet-app-label
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sdc-dnninference-yamnet-app-label
+  template:
+    metadata:
+      name: sdc-dnninference-yamnet-ReplicaSet
+      labels:
+        app: sdc-dnninference-yamnet-app-label
+    spec:
+      nodeName: tank-node2                 # node name
+      containers:
+      - name: sdc-dnninference-yamnet-con      
+        image: sdcbench/dnninference-tfserving:2.3.0   
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        env:
+        - name: MODEL_NAME
+          value: "yamnet"
+        volumeMounts:
+        - name: model-path
+          mountPath: /models/yamnet
+      volumes:
+      - name: model-path
+        hostPath:
+          path: /mnt/sdcbench/dnninference/models/yamnet
