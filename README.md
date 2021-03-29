@@ -9,8 +9,12 @@
 SDCBench
 |
 ├─── socialnetwork-func
-                  ├──yaml-func
-                  ├──yaml-db
+|       ├── yaml-func
+|       ├── yaml-db
+├─── mongodb
+        ├── yaml
+├─── solr
+        ├── yaml
 
 </code></pre>
 </details>
