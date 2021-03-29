@@ -5,7 +5,7 @@ socialnetwork-func项目简介：该项目为社交网络应用的serverless版�
 ##### 1. 创建命名空间
 
 ```
-kubectl apply -f ./namespaces.yml
+kubectl apply -f ./yaml-func/namespaces.yml
 ```
 
 ##### 2. 部署数据库和函数
