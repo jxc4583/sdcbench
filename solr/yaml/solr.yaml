@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 # Source: solr/templates/service-headless.yaml
 apiVersion: "v1"
@@ -212,3 +213,219 @@ spec:
         resources:
           requests:
             storage: 4Gi
+=======
+---
+# Source: solr/templates/service-headless.yaml
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "sdc-solr-headless"
+  namespace: sdc-solr
+  labels:
+    app: solr
+    release: "sdc"
+spec:
+  clusterIP: "None"
+  ports:
+  - port: 8983
+    name: "solr-headless"
+  selector:
+    app: "solr"
+    release: "sdc"
+    component: "server"
+---
+# Source: solr/templates/service.yaml
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "sdc-solr-svc"
+  namespace: sdc-solr
+  labels:
+    app: solr
+    release: "sdc"
+  annotations:
+    {}
+spec:
+  # type: "ClusterIP"
+  # ports:
+  # - port: 8983
+  #   name: "solr-client"
+  selector:
+    app: "solr"
+    release: "sdc"
+    component: "server"
+  type: NodePort
+  ports:
+  - name: "solr-client"
+    port: 8983
+    nodePort: 30002
+
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: solr-pdb
+  namespace: sdc-solr
+spec:
+  selector:
+    matchLabels:
+      app: solr
+  maxUnavailable: 1
+---
+# Source: solr/templates/solr-xml-configmap.yaml
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "sdc-solr-config-map"
+  namespace: sdc-solr
+  labels:
+    app: solr
+data:
+  solr.xml: |
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <solr>
+      <solrcloud>
+        <str name="host">${host:}</str>
+        <int name="hostPort">${jetty.port:8983}</int>
+        <str name="hostContext">${hostContext:solr}</str>
+        <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
+        <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+        <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+        <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
+        <str name="zkCredentialsProvider">${zkCredentialsProvider:org.apache.solr.common.cloud.DefaultZkCredentialsProvider}</str>
+        <str name="zkACLProvider">${zkACLProvider:org.apache.solr.common.cloud.DefaultZkACLProvider}</str>
+      </solrcloud>
+      <shardHandlerFactory name="shardHandlerFactory"
+        class="HttpShardHandlerFactory">
+        <int name="socketTimeout">${socketTimeout:600000}</int>
+        <int name="connTimeout">${connTimeout:60000}</int>
+      </shardHandlerFactory>
+    </solr>
+---
+# Source: solr/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sdc-solr
+  namespace: sdc-solr
+  labels:
+    app: solr
+    release: sdc
+    component: server
+spec:
+  selector:
+    matchLabels:
+      app: "solr"
+      release: "sdc"
+      component: "server"
+  serviceName: sdc-solr-headless
+  replicas: 3
+  updateStrategy:
+        type: OnDelete
+  template:
+    metadata:
+      labels:
+        app: "solr"
+        release: "sdc"
+        component: "server"
+      annotations:
+        {}
+    spec:
+      securityContext:
+        fsGroup: 8983
+      affinity:
+        {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - name: solr-xml
+          configMap:
+            name: sdc-solr-config-map
+            items:
+            - key: solr.xml
+              path: solr.xml
+      initContainers:
+        - name: check-zk
+          image: sdcbench/busybox:latest #busybox:latest
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              COUNTER=0;
+              while [  $COUNTER -lt 120 ]; do
+                for i in "zk-0.zk-hs" "zk-1.zk-hs" "zk-2.zk-hs" ;
+                  do mode=$(echo srvr | nc $i 2181 | grep "Mode");
+                    if [ "$mode" == "Mode: leader" ] || [ "$mode" == "Mode: standalone" ]; then
+                      exit 0;
+                    fi;
+                  done;
+                let COUNTER=COUNTER+1;
+                sleep 2;
+              done;
+              echo "Did NOT see a ZK leader after 240 secs!";
+              exit 1;
+        - name: "cp-solr-xml"
+          image: sdcbench/busybox:latest #busybox:latest
+          command: ['sh', '-c', 'cp /tmp/solr.xml /tmp-config/solr.xml']
+          volumeMounts:
+          - name: "solr-xml"
+            mountPath: "/tmp"
+          - name: "sdc-solr-pvc"
+            mountPath: "/tmp-config"
+      containers:
+        - name: solr
+          image: sdcbench/solr:7.5.0 #"solr:7.5.0"
+          imagePullPolicy: Always
+          resources:
+            {}
+          ports:
+          - containerPort: 8983
+            name: solr-client
+          env:
+            - name: "SOLR_JAVA_MEM"
+              value: "-Xms2g -Xmx3g"
+            - name: "SOLR_HOME"
+              value: "/opt/solr/server/home"
+            - name: "SOLR_PORT"
+              value: "8983"
+            - name: "POD_HOSTNAME"
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: "SOLR_HOST"
+              value: "$(POD_HOSTNAME).sdc-solr-headless"
+            - name: "ZK_HOST"
+              value: "zk-0.zk-hs.sdc-solr.svc.cluster.local,zk-1.zk-hs.sdc-solr.svc.cluster.local,zk-2.zk-hs.sdc-solr.svc.cluster.local" #zk-cs:2181
+            - name: "SOLR_LOG_LEVEL"
+              value: "INFO"
+
+          livenessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            httpGet:
+              scheme: "HTTP"
+              path: /solr/admin/info/system
+              port: 8983
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            httpGet:
+              scheme: "HTTP"
+              path: /solr/admin/info/system
+              port: 8983
+          volumeMounts:
+            - name: sdc-solr-pvc
+              mountPath: /opt/solr/server/home
+
+  volumeClaimTemplates:
+    - metadata:
+        name: sdc-solr-pvc
+        annotations:
+          pv.beta.kubernetes.io/gid: "8983"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-storage
+        resources:
+          requests:
+            storage: 4Gi
+>>>>>>> ssd model

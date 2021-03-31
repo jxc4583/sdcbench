@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 kind: Namespace  #类型为Namespace
 apiVersion: v1 #类型为Namespace
 metadata:
   name: sdc-solr  #命名空间名称
   labels:
+=======
+kind: Namespace  #类型为Namespace
+apiVersion: v1 #类型为Namespace
+metadata:
+  name: sdc-solr  #命名空间名称
+  labels:
+>>>>>>> ssd model
     name: sdc-solr

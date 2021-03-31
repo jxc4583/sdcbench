@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 model_config_list: {
   config: {
     name: "half",
@@ -21,4 +22,29 @@ model_config_list: {
 docker run -d -p 9500:8500 -p 9501:8501 -v /home/tank/yanan/model/resnet:/models/resnet -v /home/tank/yanan/model/mnist:/models/mnist -v /home/tank/yanan/model/half:/models/half -v /home/tank/yanan/model/models.config:/models/models.config -e CUDA_VISIBLE_DEVICES=0 -t tensorflow/serving:latest-gpu --model_config_file=/models/models.config
 
 
+=======
+model_config_list: {
+  config: {
+    name: "half",
+    base_path: "/models/half",
+    model_platform: "tensorflow"
+  },
+  config: {
+    name: "mnist",
+    base_path: "/models/mnist",
+    model_platform: "tensorflow"
+  },
+  config: {
+    name: "resnet",
+    base_path: "/models/resnet",
+    model_platform: "tensorflow"
+  }
+}
+
+
+
+docker run -d -p 9500:8500 -p 9501:8501 -v /home/tank/yanan/model/resnet:/models/resnet -v /home/tank/yanan/model/mnist:/models/mnist -v /home/tank/yanan/model/half:/models/half -v /home/tank/yanan/model/models.config:/models/models.config -e CUDA_VISIBLE_DEVICES=0 -t tensorflow/serving:latest-gpu --model_config_file=/models/models.config
+
+
+>>>>>>> ssd model
 19.1% 1.019

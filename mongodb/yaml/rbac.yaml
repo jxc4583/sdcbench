@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -9,4 +10,17 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: default
+=======
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: mongo-default-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: default
+>>>>>>> ssd model
     namespace: sdc-mongo

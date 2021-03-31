@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 kind: Namespace  #类型为Namespace
 apiVersion: v1 #类型为Namespace
 metadata:
   name: sdc-mongo #命名空间名称
   labels:
     name: sdc-mongo
+=======
+kind: Namespace  #类型为Namespace
+apiVersion: v1 #类型为Namespace
+metadata:
+  name: sdc-mongo #命名空间名称
+  labels:
+    name: sdc-mongo
+>>>>>>> ssd model
