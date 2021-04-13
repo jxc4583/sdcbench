@@ -1,0 +1,1 @@
+SDCBench只选取了cloudsuite套件中的数据缓存应用memcached
