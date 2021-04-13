@@ -1,7 +1,6 @@
 # Data Caching #
 
-[![Pulls on DockerHub][dhpulls]][dhrepo]
-[![Stars on DockerHub][dhstars]][dhrepo]
+cloudsuite：https://www.cloudsuite.ch/
 
 This benchmark uses the [Memcached][memcachedWeb] data caching server,
 simulating the behavior of a Twitter caching server using a twitter dataset.
