@@ -12,9 +12,21 @@ SDCBench
 |       ├── yaml-func
 |       ├── yaml-db
 ├─── mongodb
-        ├── yaml
+|       ├── yaml
 ├─── solr
-        ├── yaml
-
+|       ├── yaml
+├─── dnninference
+|       ├── dssm-minclass
+|       ├── half
+|       ├── mobilenet
+|       ├── resnet
+|       ├── ssd
+|       ├── textcnn
+|       ├── yamnet
+├─── tailbench
+|       ├── img-dnn
+|       ├── masstree
+|       ├── xapian
+├─── tpc-w
 </code></pre>
 </details>
