@@ -28,5 +28,7 @@ SDCBench
 |       ├── masstree
 |       ├── xapian
 ├─── tpc-w
+├─── cloudsuite
+|       ├── memcached
 </code></pre>
 </details>
