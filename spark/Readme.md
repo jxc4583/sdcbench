@@ -99,7 +99,7 @@ hdfs dfs -mkdir -p /SparkBench
 ```
 - Kmeans 运行
 ```
-cd KMeans
+cd ./spark-bench-legacy/KMeans
 ./bin/gen_data_java.sh
 ./bin/run_java.sh
 ```
