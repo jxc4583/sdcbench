@@ -1,0 +1,57 @@
+version: "3"
+services:
+  master:
+    image: sdcbench/spark:v1
+    container_name: "Spark-1"
+    hostname: master
+    tty: true
+    networks:
+      spark_net:
+        ipv4_address: 172.27.0.5
+    environment:
+      # 设置时区为上海，否则时间会有问题
+      - TZ=Asia/Shanghai
+    ports: # 这个部分的端口映射可以自行选择
+      - "18080:18080"
+      - "8088:8088"
+      - "8086:8080"
+      - "4040:4040"
+      - "4041:4041"
+      - "4042:4042"
+      - "4043:4043"
+      - "4044:4044"
+      - "4045:4045"
+      - "4046:4046"
+      - "4047:4047"
+      - "4048:4048"
+      - "4049:4049"
+
+  slave1:
+    image: sdcbench/spark:v1
+    container_name: Spark-2
+    hostname: slave1
+    tty: true
+    networks:
+      spark_net:
+        ipv4_address: 172.27.0.6
+    environment:
+      # 设置时区为上海，否则时间会有问题
+      - TZ=Asia/Shanghai
+
+  slave2:
+    image: sdcbench/spark:v1
+    container_name: Spark-3
+    hostname: slave2
+    tty: true
+    networks:
+      spark_net:
+        ipv4_address: 172.27.0.7
+    environment:
+      # 设置时区为上海，否则时间会有问题
+      - TZ=Asia/Shanghai
+
+networks:
+  spark_net:
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
