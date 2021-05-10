@@ -1,9 +1,9 @@
 # bigdataSort
-> 单二进制可执行文件
+Note. **单二进制可执行文件**
 ## 安装
 源码地址：https://github.com/XingwXiong/SDC_Bench
 
-这里可用同级目录下的sort。
+这里可用同级目录下的sort-openmp。
 
 - 编译
 ```
