@@ -1,0 +1,10 @@
+.:
+总用量 28
+-rw-rw-r-- 1 alanubu alanubu  72  8月 28 15:40 test.data.01.txt
+-rw-rw-r-- 1 alanubu alanubu  88  8月 30 21:36 test.data.02.txt
+-rw-rw-r-- 1 alanubu alanubu 136  9月  1 10:57 test.data.03.txt
+-rw-rw-r-- 1 alanubu alanubu 533  9月  1 10:57 test.data.04.txt
+-rw-rw-r-- 1 alanubu alanubu 141  9月  1 10:57 test.data.05.txt
+-rw-rw-r-- 1 alanubu alanubu 136  9月  1 10:57 test.data.06.txt
+-rw-rw-r-- 1 alanubu alanubu 644  9月  1 10:57 test.data.07.txt
+-rw-rw-r-- 1 alanubu alanubu   0  9月  1 10:57 test.data.08.txt
