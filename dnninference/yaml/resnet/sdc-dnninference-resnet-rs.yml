@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sdc-dnninference-resnet-service
+  namespace: sdc-dnninference
+spec:
+  selector:
+    app: sdc-dnninference-resnet-app-label
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8501
+    targetPort: 8501
+    nodePort: 30101
+---
+apiVersion: apps/v1                          
+kind: ReplicaSet                               
+metadata:
+  name: sdc-dnninference-resnet-replicaset
+  namespace: sdc-dnninference
+  labels:                               
+    app: sdc-dnninference-resnet-app-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sdc-dnninference-resnet-app-label
+  template:
+    metadata:
+      name: sdc-dnninference-resnet-ReplicaSet
+      labels:
+        app: sdc-dnninference-resnet-app-label
+    spec:
+      nodeName: tank-node2                 # node name
+      containers:
+      - name: sdc-dnninference-resnet-con      
+        image: sdcbench/dnninference-tfserving:2.3.0   
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        env:
+        - name: MODEL_NAME
+          value: "resnet"
+        volumeMounts:
+        - name: model-path
+          mountPath: /models/resnet
+      volumes:
+      - name: model-path
+        hostPath:
+          path: /mnt/sdcbench/dnninference/models/resnet
