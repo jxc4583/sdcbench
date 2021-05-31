@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alu-sdc
+  namespace: sdc-be-func
+spec:
+  type: NodePort
+  ports:
+  - name: http 
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30351
+  selector:
+    faas_function: alu-sdc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alu-sdc
+  labels:
+    faas_function: alu-sdc
+  namespace: sdc-be-func
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      faas_function: alu-sdc
+  template:
+    metadata:
+      labels: 
+        faas_function: alu-sdc
+      name: alu-sdc
+    spec:
+      containers:
+      - name: alu-sdc
+        env:
+        - name: exec_timeout
+          value: 30m
+        - name: fprocess
+          value: python index.py
+        - name: handler_wait_duration
+          value: 30m
+        - name: read_timeout
+          value: 30m
+        - name: write_timeout
+          value: 30m
+        image: sdcbench/be-func-alu:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /_/health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 1
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /_/health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 1
+          successThreshold: 1
+          timeoutSeconds: 1
+      restartPolicy: Always
