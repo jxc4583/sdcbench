@@ -30,5 +30,39 @@ SDCBench
 ├─── tpc-w
 ├─── cloudsuite
 |       ├── memcached
+├─── functionbench
+|       ├── ALU
+|       ├── DiskIO
+|       ├── Matmul
+├─── TensorflowBench
+|       ├── alexnet
+|       ├── googlenet
+|       ├── inception3
+|       ├── inception4
+|       ├── vgg11
+|       ├── vgg16
+├─── Spark
+|       ├── DecisionTree
+|       ├── LinearRegression
+|       ├── PCA
+|       ├── Terasort
+|       ├── PageRank
+|       ├── PregelOperation
+|       ├── LabelPropagation
+|       ├── Kmeans
+├─── Parsec
+|       ├── blackscholes
+|       ├── canneal
+|       ├── fluidanimate
+|       ├── freqmine
+|       ├── streamcluster
+├─── Bigdatabench
+|       ├── Union
+|       ├── OrderBy
+|       ├── CF
+|       ├── MD5
+|       ├── CC
+├────────────────────────
+
 </code></pre>
 </details>
